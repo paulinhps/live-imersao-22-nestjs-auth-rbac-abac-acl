@@ -1,0 +1,120 @@
+## Create Admin
+POST http://localhost:3000/users
+Content-Type: application/json
+
+{
+    "name": "Admin",
+    "email": "admin@user.com",
+    "password": "admin",
+    "role": "ADMIN"
+}
+
+### Create Reader
+POST http://localhost:3000/users
+Content-Type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "name": "Reader",
+    "email": "reader@user.com",
+    "password": "reader",
+    "role": "READER"
+}
+
+### Create Writer
+POST http://localhost:3000/users
+Content-Type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "name": "Writer",
+    "email": "writer@user.com",
+    "password": "writer",
+    "role": "WRITER",
+    "permissions": [
+        {
+            "action": "read",
+            "resource": "User"
+        },
+        {
+            "action": "update",
+            "resource": "Post",
+            "condition": {
+                "id": "1"
+            }
+        }
+    ]
+}
+
+###
+GET http://localhost:3000/users
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1lIjoiQWRtaW4iLCJlbWFpbCI6ImFkbWluQHVzZXIuY29tIiwiaWF0IjoxNzQzNTQ5MzA4LCJleHAiOjE3NDM1NTY1MDh9.QvwOm2s_X9khfW0jOmISX8jiNsviInZkAptWLGFOVxQ 
+
+###
+GET http://localhost:3000/users/cm8z3gmns0002s9sywsjk9upq
+
+
+###
+# @name adminLogin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@user.com",
+    "password": "admin"
+}
+
+###
+
+@tokenAdmin = {{ adminLogin.response.body.access_token }}
+
+###
+# @name readerLogin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "reader@user.com",
+    "password": "reader"
+}
+
+###
+
+@tokenReader = {{ readerLogin.response.body.access_token }}
+
+###
+# @name writerLogin
+POST http://localhost:3000/auth/login
+Content-Type: application/json
+
+{
+    "email": "writer@user.com",
+    "password": "writer"
+}
+
+###
+
+@tokenWriter = {{ writerLogin.response.body.access_token }}
+
+###
+POST http://localhost:3000/posts
+Content-Type: application/json
+Authorization: Bearer {{tokenAdmin}}
+
+{
+    "title": "My first post",
+    "content": "This is the content of my first post.",
+    "published": false
+}
+
+###
+GET http://localhost:3000/posts
+Authorization: Bearer {{tokenReader}}
+
+###
+GET http://localhost:3000/posts/cm8z70heh0001s9r7ick5369u
+Authorization: Bearer {{tokenReader}}
+
+###
+GET http://localhost:3000/users
+Authorization: Bearer {{tokenReader}}
