@@ -14,7 +14,7 @@ generator json {
 
 datasource db {
   provider = "postgresql"
-  url      = env("DATABASE_URL")
+  url      = "postgresql://postgres:root@localhost:5432/mydb?connection_limit=1"
 }
 
 enum Roles {
